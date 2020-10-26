@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DNBProject.DAL\DNBProject.DAL.csproj" />
+    <ProjectReference Include="..\DNBProject.Entities\DNBProject.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

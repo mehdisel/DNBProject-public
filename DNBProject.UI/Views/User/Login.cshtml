@@ -1,0 +1,77 @@
+﻿@model UserLoginViewModel
+@{
+    Layout = null;
+}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - DNBProject.UI</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/signin.css" />
+</head>
+
+<body class="text-center">
+    <form class="form-signin">
+        <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="text" id="inputEmail" class="form-control" placeholder="UserName" asp-for="UserName" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" asp-for="Password" required>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" asp-for="RememberMe"> Remember me
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <p class="mt-5 mb-3 text-muted">&copy; @DateTime.Now.Year</p>
+    </form>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $('.form-signin').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: '/User/Login',
+                data: $('form').serialize(),
+                success: function (data) {
+                    if (!data.incorrectLogin) {
+                        swal({
+                            title: data.message,
+                            text: "Yönlendiriliyorsunuz",
+                            icon: "success",
+                            buttons: false,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                            timer: 2000,
+                        });
+                        setTimeout(function () {
+                            window.location.href = data.url;
+                        }, 2000);
+                    }
+                    else {
+                        swal({
+                            title: data.Message,
+                            text: "Giriş bilgileriniz hatalı.",
+                            icon: "error",
+                            buttons: false,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                            timer: 2000,
+                        });
+                        setTimeout(function () {
+                            $('#inputPassword').val("");
+                        }, 2000);
+                    }
+                }
+
+            });
+        });
+    </script>
+</body>
+</html>

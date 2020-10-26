@@ -1,0 +1,126 @@
+﻿@model PagedList.Core.IPagedList<DNBProject.Entities.Entity.Product>
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1>Products</h1>
+
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <th scope="col">ProductID</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Stock Quantity</th>
+            <th scope="col">Price</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DNBProject.Entities.Entity.Product item in Model)
+        {
+            <tr id="@item.ID">
+                <th scope="row">@item.ID</th>
+                <td class="ProductName">@item.ProductName</td>
+                <td>@item.InStock</td>
+                <td>@item.Price</td>
+                <td><a class="btn btn-success AddCart" href="#" role="button">Add to card</a></td>
+                <td><a class="btn btn-danger DeleteItem" href="#" role="button">Delete</a></td>
+                <td><a class="btn btn-primary EditItem" href="#" role="button">Edit</a></td>
+            </tr>
+        }
+
+
+    </tbody>
+
+</table>
+<pager list="@Model" asp-controller="Product" asp-action="Products" />
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', '.DeleteItem', function (e) {
+                e.preventDefault();
+                let id = $(this).parent().parent().attr('id');
+                swal({
+                    title: "Silmek istediğinizden emin misiniz ?",
+                    text: "Silmek istediğinizden emin misiniz ?",
+                    icon: "warning",
+                    buttons: ["İptal", "Sil"],
+                    dangerMode: true,
+                    closeOnEsc: false,
+                    closeOnClickOutside: false,
+                }).then(function (isConfirm) {
+                    if (!isConfirm) return;
+                    $.ajax({
+                        type: 'post',
+                        url: '/Product/DeleteItem',
+                        data: { 'ProductID': id },
+                        dataType: 'Json',
+                        success: function (data) {
+                            //debugger;
+                            console.log(data);
+                            if (data.isSuccess == true) {
+                                swal({
+                                    title: "Silindi",
+                                    text: "Yönlendiriliyorsunuz",
+                                    icon: "success",
+                                    buttons: false,
+                                    closeOnClickOutside: false,
+                                    closeOnEsc: false,
+                                    timer: 2000,
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/Product/Products";
+                                }, 2000);
+                            }
+                            console.log(data);
+                        }
+                    });
+
+                })
+
+
+            });
+            $(document).on('click', '.EditItem', function (e) {
+                e.preventDefault();
+                let id = $(this).parent().parent().attr('id');
+                window.location.href = "/Product/Edit/" + id;
+
+            })
+            $(document).on('click', '.AddCart', function (e) {
+                e.preventDefault();
+                let id = $(this).parent().parent().attr('id');
+                    $.ajax({
+                        type: 'post',
+                        url: '/ShoppingCart/AddCart',
+                        data: { 'ProductID': id },
+                        dataType: 'Json',
+                        success: function (data) {
+                            //debugger;
+                            console.log(data);
+                            if (data.isSuccess == true) {
+                                swal({
+                                    title: "Sepete eklendi",
+                                    text: "Yönlendiriliyorsunuz",
+                                    icon: "success",
+                                    buttons: false,
+                                    closeOnClickOutside: true,
+                                    closeOnEsc: true,
+                                    timer: 1000,
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/Product/Products";
+                                }, 1000);
+                            }
+                           
+                        }
+                    });
+
+            });
+
+        });
+
+    </script>
+
+}

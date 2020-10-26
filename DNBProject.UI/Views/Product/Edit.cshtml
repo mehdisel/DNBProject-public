@@ -1,0 +1,74 @@
+﻿@model ProductListViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+<div class="container">
+    <div class="card ">
+        <div class="card-body">
+            <form href="~/Product/Edit" class="ProductEditForm">
+                <input type="hidden" asp-for="Product.ID" />
+                <input type="hidden" asp-for="Product.IDProductType" />
+                <div class="form-group">
+                    <label class="control-label small">Urun adi</label>
+                    <input type="text" class="form-control" asp-for="Product.ProductName" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label small">Stok Adedi</label>
+                    <input type="number" class="form-control small" asp-for="Product.InStock" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label small">Stok Adedi</label>
+                    <input type="number" class="form-control small" asp-for="Product.Price" />
+                </div>
+                <input type="submit" value="Kaydet" class="btn btn-dark" />
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{ 
+    <script>
+        $('.ProductEditForm').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'post',
+                url: '/Product/Edit',
+                data: $('form').serialize(),
+                success: function (data) {
+                    if (data.isSuccess) {
+                        swal({
+                            title: "Başarıyla tamamlandı",
+                            text: "Yönlendiriliyorsunuz",
+                            icon: "success",
+                            buttons: false,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                            timer: 2000,
+                        });
+                        setTimeout(function () {
+                            window.location.href = "/Product/Products";
+                        }, 2000);
+                    }
+                    else {
+                        swal({
+                            title: data.Message,
+                            text: "Bigleri kontrol ediniz.",
+                            icon: "error",
+                            buttons: false,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                            timer: 2000,
+                        });
+                        setTimeout(function () {
+                           
+                        }, 2000);
+                    }
+                }
+
+            });
+        });
+    </script>
+
+}
